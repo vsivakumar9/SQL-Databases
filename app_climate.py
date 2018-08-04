@@ -109,6 +109,37 @@ def tobs():
                     filter(Measurement.date > dateprevyr).\
                     all()
     return jsonify(station_temps)
+
+
+@app.route("/api/v1.0/<start>/<end>")
+def tempst(start,end):
+    #Calculate minimun temp, avg temp and max temp for date >= start date. TBD
+    #st_date_inp  = input("input a start date in yyyy-mm-dd format")
+    #end_date_inp = input("input an end  date in yyyy-mm-dd format")
+    st_date_inp  = start
+    end_date_inp = end
+    try:
+        st_date_conv =  dt.datetime.strptime(st_date_inp, '%Y-%m-%d')
+        end_date_conv = dt.datetime.strptime(end_date_inp, '%Y-%m-%d')
+        print(st_date_conv,end_date_conv)
+    except:
+        print(" Invalid date or date format. Please input valid date in yyyy-mm-dd format.")
+        print(" Using default dates. start = 2017-08-21, end=current date")
+        print(st_date_inp , end_date_inp)
+        st_date_inp   = '2017-08-21'
+        st_date_conv  = dt.datetime.strptime(st_date_inp, '%Y-%m-%d')
+        end_date_conv = dt.datetime.today().strftime('%Y-%m-%d')
+    print(st_date_conv, end_date_conv)
+    #Calculate minimum temp, avg temp and max temp in between  given 
+    #start date and end date. 
+    Meas_temp_st = session.query(func.min(Measurement.tobs),func.avg(Measurement.tobs),func.max(Measurement.tobs)).\
+                     filter(Measurement.date >= st_date_conv).\
+                     filter(Measurement.date <= end_date_conv).\
+                     all()
+    return jsonify(Meas_temp_st)
+#@app.route("/api/v1.0/<start>/<end>")
+
+
     
 if __name__ == '__main__':
     app.run(debug=True)
