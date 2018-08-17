@@ -1,3 +1,4 @@
-select min(tobs), max(tobs), avg(tobs) 
+select count(*)
       from measurement
-where station = 'USC00519281'
+where station = 'USC00519397'
+  and date    > '2016-08-31';
